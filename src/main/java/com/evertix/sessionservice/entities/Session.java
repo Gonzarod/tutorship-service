@@ -1,21 +1,35 @@
 package com.evertix.sessionservice.entities;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import com.evertix.sessionservice.model.Course;
+import com.evertix.sessionservice.model.User;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
 @Table(name = "sessions")
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class Session extends AuditModel{
+
+    public Session(Date start_at, Date end_at, String status, String topic, String link, Long studentId, Long courseId) {
+        this.start_at=start_at;
+        this.end_at=end_at;
+        this.status=status;
+        this.topic=topic;
+        this.link=link;
+        this.studentId=studentId;
+        this.courseId=courseId;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -41,15 +55,20 @@ public class Session extends AuditModel{
     @Size(max = 150)
     private String link;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "student_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    //@JsonIgnore
-    private User student;
+    @Column(name="student_id")
+    private Long studentId;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "course_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    //@JsonIgnore
-    private Course course;
+    @Column(name="course_id")
+    private Long courseId;
+
+    @Transient
+    private User studentModel;
+
+    @Transient
+    private Course courseModel;
+
+
+    public Session() {
+
+    }
 }

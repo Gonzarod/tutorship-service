@@ -1,10 +1,8 @@
 package com.evertix.sessionservice.service.impl;
 
-import com.evertix.tutofastbackend.exception.ResourceNotFoundException;
-import com.evertix.tutofastbackend.model.SessionDetail;
-import com.evertix.tutofastbackend.repository.SessionDetailRepository;
-import com.evertix.tutofastbackend.repository.SessionRepository;
-import com.evertix.tutofastbackend.repository.UserRepository;
+import com.evertix.sessionservice.entities.SessionDetail;
+import com.evertix.sessionservice.repository.SessionDetailRepository;
+import com.evertix.sessionservice.service.SessionDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,21 +10,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SessionDetailServiceImpl implements SessionDetailService{
-    @Autowired
-    private SessionRepository sessionRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
+public class SessionDetailServiceImpl implements SessionDetailService {
     @Autowired
     private SessionDetailRepository sessionDetailRepository;
+
+    @Override
+    public Page<SessionDetail> getAllSessionDetails(Pageable pageable) {
+        return this.sessionDetailRepository.findAll(pageable);
+    }
+
 
     @Override
     public Page<SessionDetail> getAllSessionDetailsBySessionId(Long sessionId, Pageable pageable) {
         return sessionDetailRepository.findAllBySessionId(sessionId, pageable);
     }
-
+/*
     @Override
     public SessionDetail createSessionDetail(Long sessionId, Long teacherId, SessionDetail sessionDetail) {
         return sessionRepository.findById(sessionId).map(session -> {
@@ -63,4 +61,6 @@ public class SessionDetailServiceImpl implements SessionDetailService{
             }).orElseThrow(()-> new ResourceNotFoundException("Teacher with Id: "+teacherId+" not found"));
         }).orElseThrow(()-> new ResourceNotFoundException("Session with Id: "+sessionId+" not found"));
     }
+
+     */
 }

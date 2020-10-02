@@ -1,6 +1,6 @@
 package com.evertix.sessionservice.repository;
 
-import com.evertix.tutofastbackend.model.SessionDetail;
+import com.evertix.sessionservice.entities.SessionDetail;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,5 +1,6 @@
 package com.evertix.sessionservice.entities;
 
+import com.evertix.sessionservice.model.User;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
@@ -14,7 +15,7 @@ import javax.validation.constraints.Size;
 @Table(name = "session_details")
 @Getter
 @Setter
-public class SessionDetail extends AuditModel{
+public class SessionDetail extends AuditModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -30,9 +31,18 @@ public class SessionDetail extends AuditModel{
     //@JsonIgnore
     private Session session;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "teacher_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    //@JsonIgnore
-    private User teacher;
+    @Column(name = "teacher_id")
+    private Long teacherId;
+
+    @Transient
+    private User teacherModel;
+
+    public SessionDetail(String state, Long teacherId) {
+        this.state=state;
+        this.teacherId=teacherId;
+    }
+
+    public SessionDetail() {
+
+    }
 }

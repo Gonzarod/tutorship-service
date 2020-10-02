@@ -1,5 +1,6 @@
 package com.evertix.sessionservice.resource;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,8 +10,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
 
-@Getter
-@Setter
+@Data
 public class SessionSaveResource {
     @Column(nullable = false, updatable = false)
     private Date start_at;

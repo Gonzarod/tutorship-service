@@ -1,9 +1,9 @@
 package com.evertix.sessionservice.controller;
 
-import com.evertix.tutofastbackend.model.Session;
-import com.evertix.tutofastbackend.resource.SessionResource;
-import com.evertix.tutofastbackend.resource.SessionSaveResource;
-import com.evertix.tutofastbackend.service.SessionService;
+import com.evertix.sessionservice.entities.Session;
+import com.evertix.sessionservice.resource.SessionResource;
+import com.evertix.sessionservice.resource.SessionSaveResource;
+import com.evertix.sessionservice.service.SessionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -27,14 +27,39 @@ import java.util.stream.Collectors;
 @Tag(name = "Session", description = "API")
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:4200")
 public class SessionController {
+
     @Autowired
     private ModelMapper mapper;
 
     @Autowired
     private SessionService sessionService;
 
+    @GetMapping("/sessions")
+    @Operation(summary = "Get All Sessions By Student", description = "Get All Sessions By Student", tags = {"Session"},
+            parameters = {
+                    @Parameter(in = ParameterIn.QUERY
+                            , description = "Page you want to retrieve (0..N)"
+                            , name = "page"
+                            , content = @Content(schema = @Schema(type = "integer", defaultValue = "0"))),
+                    @Parameter(in = ParameterIn.QUERY
+                            , description = "Number of records per page."
+                            , name = "size"
+                            , content = @Content(schema = @Schema(type = "integer", defaultValue = "20"))),
+                    @Parameter(in = ParameterIn.QUERY
+                            , description = "Sorting criteria in the format: property(,asc|desc). "
+                            + "Default sort order is ascending. " + "Multiple sort criteria are supported."
+                            , name = "sort"
+                            , content = @Content(array = @ArraySchema(schema = @Schema(type = "string"))))
+            })
+    public Page<SessionResource> getAllSessions(@PageableDefault @Parameter(hidden = true) Pageable pageable){
+        Page<Session> sessionPage = sessionService.getAllSessions(pageable);
+        List<SessionResource> resources = sessionPage.getContent().stream().map(this::convertToResource).collect(Collectors.toList());
+        return new PageImpl<>(resources,pageable,sessionPage.getTotalElements());
+    }
+
+
+    /*
     @GetMapping("/students/{studentId}/sessions")
     @Operation(summary = "Get All Sessions By Student", description = "Get All Sessions By Student", tags = {"Session"},
             parameters = {
@@ -128,6 +153,8 @@ public class SessionController {
                                            @PathVariable(name = "sessionId") Long sessionId){
         return sessionService.deleteSession(courseId, studentId, sessionId);
     }
+
+     */
 
     private Session convertToEntity(SessionSaveResource resource){return mapper.map(resource, Session.class);}
     private SessionResource convertToResource(Session entity){return mapper.map(entity, SessionResource.class);}

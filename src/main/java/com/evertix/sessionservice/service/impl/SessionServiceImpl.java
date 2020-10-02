@@ -1,10 +1,8 @@
 package com.evertix.sessionservice.service.impl;
 
-import com.evertix.tutofastbackend.exception.ResourceNotFoundException;
-import com.evertix.tutofastbackend.model.Session;
-import com.evertix.tutofastbackend.repository.CourseRepository;
-import com.evertix.tutofastbackend.repository.SessionRepository;
-import com.evertix.tutofastbackend.repository.UserRepository;
+import com.evertix.sessionservice.entities.Session;
+import com.evertix.sessionservice.repository.SessionRepository;
+import com.evertix.sessionservice.service.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,20 +10,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SessionServiceImpl implements SessionService{
+public class SessionServiceImpl implements SessionService {
     @Autowired
     private SessionRepository sessionRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    @Override
+    public Page<Session> getAllSessions(Pageable pageable) {
+        return this.sessionRepository.findAll(pageable);
+    }
 
-    @Autowired
-    private CourseRepository courseRepository;
 
+
+  /*
     @Override
     public Page<Session> getAllSessionsByStudentId(Long studentId, Pageable pageable) {
         return sessionRepository.getAllByStudentId(studentId, pageable);
     }
+
 
     @Override
     public Page<Session> getAllSessionsByCourseName(String courseName, Pageable pageable) {
@@ -75,4 +76,6 @@ public class SessionServiceImpl implements SessionService{
             }).orElseThrow(()-> new ResourceNotFoundException("Student with Id: "+studentId+" not found"));
         }).orElseThrow(()-> new ResourceNotFoundException("Course with Id: "+courseId+" not found"));
     }
+
+     */
 }

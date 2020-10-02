@@ -1,14 +1,10 @@
 package com.evertix.sessionservice.resource;
 
-import com.evertix.tutofastbackend.model.Course;
-import com.evertix.tutofastbackend.model.User;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.util.Date;
 
-@Getter
-@Setter
+@Data
 public class SessionResource {
     private Long id;
     private Date start_at;
@@ -16,6 +12,6 @@ public class SessionResource {
     private String status;
     private String topic;
     private String link;
-    private User student;
-    private Course course;
+    private Long studentId;
+    private Long courseId;
 }
