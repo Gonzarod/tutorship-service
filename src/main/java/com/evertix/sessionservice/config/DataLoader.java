@@ -47,7 +47,7 @@ public class DataLoader {
         this.sessionRepository.save(session);
 
         
-        SessionDetail sessionDetail = new SessionDetail("Aceptación Pendiente", (long) userTeacher.getId());
+        SessionDetail sessionDetail = new SessionDetail("Aceptación Pendiente",userTeacher.getId());
         sessionDetail.setSession(session);
         this.sessionDetailRepository.save(sessionDetail);
 

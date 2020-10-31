@@ -75,7 +75,7 @@ public class SessionDetailController {
         return sessionDetailService.getAllSessionDetailsBySessionId(sessionId);
     }
 
-    @GetMapping("/sessions/{sessionId}/")
+    @GetMapping("/sessions/{sessionId}/page")
     @Operation(summary = "Get All Sessions Details By Session Id Page", description = "Get All Sessions Details By Session Id Page", tags = {"SessionDetail"},
             parameters = {
                     @Parameter(in = ParameterIn.QUERY

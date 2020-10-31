@@ -5,6 +5,8 @@ import lombok.Data;
 @Data
 public class Course {
 
+    public Course() { }
+
     public Course(String name, String description){
         this.name = name;
         this.description = description;
