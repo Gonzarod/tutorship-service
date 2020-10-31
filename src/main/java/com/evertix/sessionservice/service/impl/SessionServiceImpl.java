@@ -1,22 +1,47 @@
 package com.evertix.sessionservice.service.impl;
 
 import com.evertix.sessionservice.entities.Session;
+import com.evertix.sessionservice.model.User;
 import com.evertix.sessionservice.repository.SessionRepository;
 import com.evertix.sessionservice.service.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SessionServiceImpl implements SessionService {
     @Autowired
     private SessionRepository sessionRepository;
+    @Autowired
+    private RestTemplate restTemplate;
+    @Override
+    public List<Session> getAllSessions() {
+        return sessionRepository.findAll().stream().map(session -> {
+            //User student=restTemplate.getForObject("https://user-service/api/users/"+session.getStudentId(),User.class);
+            User student=restTemplate.getForObject("https://tutofast-user-service.herokuapp.com/api/users/"+session.getStudentId(),User.class);
+
+            session.setStudentModel(student);
+            return session;
+        }).collect(Collectors.toList());
+    }
 
     @Override
-    public Page<Session> getAllSessions(Pageable pageable) {
-        return this.sessionRepository.findAll(pageable);
+    public Page<Session> getAllSessionsPage(Pageable pageable) {
+        Page<Session> page=sessionRepository.findAll(pageable);
+        List<Session> result=page.getContent().stream().map(session -> {
+            User student=restTemplate.getForObject("https://tutofast-user-service.herokuapp.com/api/users/"+session.getStudentId(),User.class);
+
+            session.setStudentModel(student);
+            return session;
+        }).collect(Collectors.toList());
+        return new PageImpl<>(result,pageable, page.getTotalElements());
     }
 
 

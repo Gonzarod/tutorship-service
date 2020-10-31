@@ -1,8 +1,6 @@
 package com.evertix.sessionservice.controller;
 
 import com.evertix.sessionservice.entities.Session;
-import com.evertix.sessionservice.resource.SessionResource;
-import com.evertix.sessionservice.resource.SessionSaveResource;
 import com.evertix.sessionservice.service.SessionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -11,13 +9,10 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -26,17 +21,20 @@ import java.util.stream.Collectors;
 
 @Tag(name = "Session", description = "API")
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/sessions")
 public class SessionController {
-
-    @Autowired
-    private ModelMapper mapper;
 
     @Autowired
     private SessionService sessionService;
 
-    @GetMapping("/sessions")
-    @Operation(summary = "Get All Sessions By Student", description = "Get All Sessions By Student", tags = {"Session"},
+    @GetMapping("/")
+    @Operation(summary = "Get All Sessions", description = "Get All Sessions", tags = {"Session"})
+    public List<Session> getAllSessions() {
+        return sessionService.getAllSessions();
+    }
+
+    @GetMapping("/page")
+    @Operation(summary = "Get All Sessions", description = "Get All Sessions", tags = {"Session"},
             parameters = {
                     @Parameter(in = ParameterIn.QUERY
                             , description = "Page you want to retrieve (0..N)"
@@ -52,11 +50,12 @@ public class SessionController {
                             , name = "sort"
                             , content = @Content(array = @ArraySchema(schema = @Schema(type = "string"))))
             })
-    public Page<SessionResource> getAllSessions(@PageableDefault @Parameter(hidden = true) Pageable pageable){
-        Page<Session> sessionPage = sessionService.getAllSessions(pageable);
-        List<SessionResource> resources = sessionPage.getContent().stream().map(this::convertToResource).collect(Collectors.toList());
-        return new PageImpl<>(resources,pageable,sessionPage.getTotalElements());
+    public Page<Session> getAllSessionsPage(@PageableDefault @Parameter(hidden = true) Pageable pageable) {
+        return sessionService.getAllSessionsPage(pageable);
     }
+
+
+
 
 
     /*
@@ -156,6 +155,4 @@ public class SessionController {
 
      */
 
-    private Session convertToEntity(SessionSaveResource resource){return mapper.map(resource, Session.class);}
-    private SessionResource convertToResource(Session entity){return mapper.map(entity, SessionResource.class);}
 }

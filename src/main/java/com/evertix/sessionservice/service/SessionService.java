@@ -5,8 +5,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 public interface SessionService {
-    Page<Session> getAllSessions(Pageable pageable);
+    List<Session> getAllSessions();
+    Page<Session> getAllSessionsPage(Pageable pageable);
+
     /*
     Page<Session> getAllSessionsByStudentId(Long studentId, Pageable pageable);
     Page<Session> getAllSessionsByCourseName(String courseName, Pageable pageable);

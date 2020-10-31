@@ -1,29 +1,74 @@
 package com.evertix.sessionservice.service.impl;
 
 import com.evertix.sessionservice.entities.SessionDetail;
+import com.evertix.sessionservice.model.User;
 import com.evertix.sessionservice.repository.SessionDetailRepository;
 import com.evertix.sessionservice.service.SessionDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SessionDetailServiceImpl implements SessionDetailService {
     @Autowired
     private SessionDetailRepository sessionDetailRepository;
 
-    @Override
-    public Page<SessionDetail> getAllSessionDetails(Pageable pageable) {
-        return this.sessionDetailRepository.findAll(pageable);
-    }
-
+    @Autowired
+    private RestTemplate restTemplate;
 
     @Override
-    public Page<SessionDetail> getAllSessionDetailsBySessionId(Long sessionId, Pageable pageable) {
-        return sessionDetailRepository.findAllBySessionId(sessionId, pageable);
+    public List<SessionDetail> getAllSessionDetails() {
+        return sessionDetailRepository.findAll().stream().map(sessionDetail -> {
+            //User student=restTemplate.getForObject("https://user-service/api/users/"+session.getStudentId(),User.class);
+            User teacher=restTemplate.getForObject("https://tutofast-user-service.herokuapp.com/api/users/"+sessionDetail.getTeacherId(),User.class);
+
+            sessionDetail.setTeacherModel(teacher);
+            return sessionDetail;
+        }).collect(Collectors.toList());
     }
+
+    @Override
+    public Page<SessionDetail> getAllSessionDetailsPage(Pageable pageable) {
+        Page<SessionDetail> page=sessionDetailRepository.findAll(pageable);
+        List<SessionDetail> result=page.getContent().stream().map(sessionDetail -> {
+            User teacher=restTemplate.getForObject("https://tutofast-user-service.herokuapp.com/api/users/"+sessionDetail.getTeacherId(),User.class);
+
+            sessionDetail.setTeacherModel(teacher);
+            return sessionDetail;
+        }).collect(Collectors.toList());
+        return new PageImpl<>(result,pageable, page.getTotalElements());
+    }
+
+    @Override
+    public List<SessionDetail> getAllSessionDetailsBySessionId(Long sessionId) {
+        return sessionDetailRepository.findAllBySessionId(sessionId).stream().map(sessionDetail -> {
+            //User student=restTemplate.getForObject("https://user-service/api/users/"+session.getStudentId(),User.class);
+            User teacher=restTemplate.getForObject("https://tutofast-user-service.herokuapp.com/api/users/"+sessionDetail.getTeacherId(),User.class);
+
+            sessionDetail.setTeacherModel(teacher);
+            return sessionDetail;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<SessionDetail> getAllSessionDetailsBySessionIdPage(Long sessionId, Pageable pageable) {
+        Page<SessionDetail> page=sessionDetailRepository.findAllBySessionId(sessionId,pageable);
+        List<SessionDetail> result=page.getContent().stream().map(sessionDetail -> {
+            //User student=restTemplate.getForObject("https://user-service/api/users/"+session.getStudentId(),User.class);
+            User teacher=restTemplate.getForObject("https://tutofast-user-service.herokuapp.com/api/users/"+sessionDetail.getTeacherId(),User.class);
+
+            sessionDetail.setTeacherModel(teacher);
+            return sessionDetail;
+        }).collect(Collectors.toList());
+        return new PageImpl<>(result,pageable, page.getTotalElements());
+    }
+
 /*
     @Override
     public SessionDetail createSessionDetail(Long sessionId, Long teacherId, SessionDetail sessionDetail) {
