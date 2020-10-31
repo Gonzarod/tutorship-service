@@ -33,8 +33,6 @@ public class User {
     private String phone;
     private LocalDate birthday;
     private String address;
-    private int totalStar;
-    private Boolean active;
-    private String linkedin;
+
 
 }

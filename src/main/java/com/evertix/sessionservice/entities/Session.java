@@ -2,6 +2,7 @@ package com.evertix.sessionservice.entities;
 
 import com.evertix.sessionservice.model.Course;
 import com.evertix.sessionservice.model.User;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,6 +19,7 @@ import java.util.Date;
 @Table(name = "sessions")
 @Data
 @EqualsAndHashCode(callSuper = true)
+@JsonIgnoreProperties(value = {"studentId","courseId"},allowSetters = true)
 public class Session extends AuditModel{
 
     public Session(Date start_at, Date end_at, String status, String topic, String link, Long studentId, Long courseId) {

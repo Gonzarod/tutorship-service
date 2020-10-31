@@ -1,6 +1,7 @@
 package com.evertix.sessionservice.entities;
 
 import com.evertix.sessionservice.model.User;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
@@ -15,6 +16,7 @@ import javax.validation.constraints.Size;
 @Table(name = "session_details")
 @Getter
 @Setter
+@JsonIgnoreProperties(value = "teacherId",allowSetters = true)
 public class SessionDetail extends AuditModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
