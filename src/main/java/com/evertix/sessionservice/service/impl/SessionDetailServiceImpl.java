@@ -26,7 +26,7 @@ public class SessionDetailServiceImpl implements SessionDetailService {
     public List<SessionDetail> getAllSessionDetails() {
         return sessionDetailRepository.findAll().stream().map(sessionDetail -> {
             //User student=restTemplate.getForObject("https://user-service/api/users/"+session.getStudentId(),User.class);
-            User teacher=restTemplate.getForObject("https://tutofast-user-service.herokuapp.com/api/users/"+sessionDetail.getTeacherId(),User.class);
+            User teacher=restTemplate.getForObject("http://tutofast-user-service.eastus.azurecontainer.io:8085/api/users/"+sessionDetail.getTeacherId(),User.class);
 
             sessionDetail.setTeacherModel(teacher);
             return sessionDetail;
@@ -37,7 +37,7 @@ public class SessionDetailServiceImpl implements SessionDetailService {
     public Page<SessionDetail> getAllSessionDetailsPage(Pageable pageable) {
         Page<SessionDetail> page=sessionDetailRepository.findAll(pageable);
         List<SessionDetail> result=page.getContent().stream().map(sessionDetail -> {
-            User teacher=restTemplate.getForObject("https://tutofast-user-service.herokuapp.com/api/users/"+sessionDetail.getTeacherId(),User.class);
+            User teacher=restTemplate.getForObject("http://tutofast-user-service.eastus.azurecontainer.io:8085/api/users/"+sessionDetail.getTeacherId(),User.class);
 
             sessionDetail.setTeacherModel(teacher);
             return sessionDetail;
@@ -49,7 +49,7 @@ public class SessionDetailServiceImpl implements SessionDetailService {
     public List<SessionDetail> getAllSessionDetailsBySessionId(Long sessionId) {
         return sessionDetailRepository.findAllBySessionId(sessionId).stream().map(sessionDetail -> {
             //User student=restTemplate.getForObject("https://user-service/api/users/"+session.getStudentId(),User.class);
-            User teacher=restTemplate.getForObject("https://tutofast-user-service.herokuapp.com/api/users/"+sessionDetail.getTeacherId(),User.class);
+            User teacher=restTemplate.getForObject("http://tutofast-user-service.eastus.azurecontainer.io:8085/api/users/"+sessionDetail.getTeacherId(),User.class);
 
             sessionDetail.setTeacherModel(teacher);
             return sessionDetail;
@@ -61,7 +61,7 @@ public class SessionDetailServiceImpl implements SessionDetailService {
         Page<SessionDetail> page=sessionDetailRepository.findAllBySessionId(sessionId,pageable);
         List<SessionDetail> result=page.getContent().stream().map(sessionDetail -> {
             //User student=restTemplate.getForObject("https://user-service/api/users/"+session.getStudentId(),User.class);
-            User teacher=restTemplate.getForObject("https://tutofast-user-service.herokuapp.com/api/users/"+sessionDetail.getTeacherId(),User.class);
+            User teacher=restTemplate.getForObject("http://tutofast-user-service.eastus.azurecontainer.io:8085/api/users/"+sessionDetail.getTeacherId(),User.class);
 
             sessionDetail.setTeacherModel(teacher);
             return sessionDetail;

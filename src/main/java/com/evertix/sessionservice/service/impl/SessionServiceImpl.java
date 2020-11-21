@@ -1,6 +1,7 @@
 package com.evertix.sessionservice.service.impl;
 
 import com.evertix.sessionservice.entities.Session;
+import com.evertix.sessionservice.model.Course;
 import com.evertix.sessionservice.model.User;
 import com.evertix.sessionservice.repository.SessionRepository;
 import com.evertix.sessionservice.service.SessionService;
@@ -25,9 +26,10 @@ public class SessionServiceImpl implements SessionService {
     public List<Session> getAllSessions() {
         return sessionRepository.findAll().stream().map(session -> {
             //User student=restTemplate.getForObject("https://user-service/api/users/"+session.getStudentId(),User.class);
-            User student=restTemplate.getForObject("https://tutofast-user-service.herokuapp.com/api/users/"+session.getStudentId(),User.class);
-
+            User student=restTemplate.getForObject("http://tutofast-user-service.eastus.azurecontainer.io:8085/api/users/"+session.getStudentId(),User.class);
+            Course course=restTemplate.getForObject("http://tutofast-user-service.eastus.azurecontainer.io:8085/api/courses/"+session.getCourseId(),Course.class);
             session.setStudentModel(student);
+            session.setCourseModel(course);
             return session;
         }).collect(Collectors.toList());
     }
@@ -36,9 +38,10 @@ public class SessionServiceImpl implements SessionService {
     public Page<Session> getAllSessionsPage(Pageable pageable) {
         Page<Session> page=sessionRepository.findAll(pageable);
         List<Session> result=page.getContent().stream().map(session -> {
-            User student=restTemplate.getForObject("https://tutofast-user-service.herokuapp.com/api/users/"+session.getStudentId(),User.class);
-
+            User student=restTemplate.getForObject("http://tutofast-user-service.eastus.azurecontainer.io:8085/api/users/"+session.getStudentId(),User.class);
+            Course course=restTemplate.getForObject("http://tutofast-user-service.eastus.azurecontainer.io:8085/api/courses/"+session.getCourseId(),Course.class);
             session.setStudentModel(student);
+            session.setCourseModel(course);
             return session;
         }).collect(Collectors.toList());
         return new PageImpl<>(result,pageable, page.getTotalElements());
