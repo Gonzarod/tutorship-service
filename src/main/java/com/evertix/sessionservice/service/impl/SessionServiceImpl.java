@@ -39,27 +39,30 @@ public class SessionServiceImpl implements SessionService {
     private UserClient userClient;
     @Override
     public List<Session> getAllSessions() {
-        /*return sessionRepository.findAll().stream().map(session -> {
+        return sessionRepository.findAll().stream().map(session -> {
             //User student=restTemplate.getForObject("https://user-service/api/users/"+session.getStudentId(),User.class);
-            User student=restTemplate.getForObject("https://tutofast-user-service.herokuapp.com/api/users/"+session.getStudentId(),User.class);
+            User student=userClient.getUserById(session.getStudentId());
+            Course course=courseClient.getCourseById(session.getCourseId());
 
             session.setStudentModel(student);
+            session.setCourseModel(course);
             return session;
-        }).collect(Collectors.toList());*/
-        return null;
+        }).collect(Collectors.toList());
     }
 
     @Override
     public Page<Session> getAllSessionsPage(Pageable pageable) {
-       /* Page<Session> page=sessionRepository.findAll(pageable);
+        Page<Session> page=sessionRepository.findAll(pageable);
         List<Session> result=page.getContent().stream().map(session -> {
-            User student=restTemplate.getForObject("https://tutofast-user-service.herokuapp.com/api/users/"+session.getStudentId(),User.class);
+            //User student=restTemplate.getForObject("https://user-service/api/users/"+session.getStudentId(),User.class);
+            User student=userClient.getUserById(session.getStudentId());
+            Course course=courseClient.getCourseById(session.getCourseId());
 
             session.setStudentModel(student);
+            session.setCourseModel(course);
             return session;
         }).collect(Collectors.toList());
-        return new PageImpl<>(result,pageable, page.getTotalElements());*/
-        return null;
+        return new PageImpl<>(result,pageable, page.getTotalElements());
     }
 
     @Override

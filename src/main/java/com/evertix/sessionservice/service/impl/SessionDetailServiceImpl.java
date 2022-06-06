@@ -1,5 +1,6 @@
 package com.evertix.sessionservice.service.impl;
 
+import com.evertix.sessionservice.client.UserClient;
 import com.evertix.sessionservice.entities.SessionDetail;
 import com.evertix.sessionservice.model.User;
 import com.evertix.sessionservice.repository.SessionDetailRepository;
@@ -21,6 +22,9 @@ public class SessionDetailServiceImpl implements SessionDetailService {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private UserClient userClient;
 
     @Override
     public List<SessionDetail> getAllSessionDetails() {
@@ -49,7 +53,7 @@ public class SessionDetailServiceImpl implements SessionDetailService {
     public List<SessionDetail> getAllSessionDetailsBySessionId(Long sessionId) {
         return sessionDetailRepository.findAllBySessionId(sessionId).stream().map(sessionDetail -> {
             //User student=restTemplate.getForObject("https://user-service/api/users/"+session.getStudentId(),User.class);
-            User teacher=restTemplate.getForObject("https://tutofast-user-service.herokuapp.com/api/users/"+sessionDetail.getTeacherId(),User.class);
+            User teacher=userClient.getUserById(sessionDetail.getTeacherId());
 
             sessionDetail.setTeacherModel(teacher);
             return sessionDetail;

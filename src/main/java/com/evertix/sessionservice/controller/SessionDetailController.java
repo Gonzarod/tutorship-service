@@ -27,6 +27,7 @@ public class SessionDetailController {
     @Autowired
     private SessionDetailService sessionDetailService;
 
+    /*
     @GetMapping("/")
     @Operation(summary = "Get All Session Details", description = "Get All Sessions Details", tags = {"SessionDetail"})
     public List<SessionDetail> getAllSessions(){
@@ -54,6 +55,8 @@ public class SessionDetailController {
         return sessionDetailService.getAllSessionDetailsPage(pageable);
     }
 
+     */
+
     @GetMapping("/sessions/{sessionId}/")
     @Operation(summary = "Get All Sessions Details By Session Id", description = "Get All Sessions Details By Session Id", tags = {"SessionDetail"},
             parameters = {
@@ -74,7 +77,7 @@ public class SessionDetailController {
     public List<SessionDetail> getAllSessionsDetailsBySessionId(@PathVariable Long sessionId){
         return sessionDetailService.getAllSessionDetailsBySessionId(sessionId);
     }
-
+    /*
     @GetMapping("/sessions/{sessionId}/page")
     @Operation(summary = "Get All Sessions Details By Session Id Page", description = "Get All Sessions Details By Session Id Page", tags = {"SessionDetail"},
             parameters = {
@@ -96,7 +99,7 @@ public class SessionDetailController {
         return sessionDetailService.getAllSessionDetailsBySessionIdPage(sessionId,pageable);
     }
 
-    /*
+
     @GetMapping("/sessions/{sessionId}/sessionDetails")
     @Operation(summary = "Get All SessionDetails By Session", description = "Get All SessionDetails By Session", tags = {"SessionDetail"},
             parameters = {
