@@ -22,6 +22,7 @@ import java.util.List;
 @Tag(name = "SessionDetail", description = "API")
 @RestController
 @RequestMapping("/api/sessionsDetails")
+@CrossOrigin(origins = "*")
 public class SessionDetailController {
 
     @Autowired

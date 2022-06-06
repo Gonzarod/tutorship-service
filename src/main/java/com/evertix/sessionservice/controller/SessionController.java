@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 @Tag(name = "Session", description = "API")
 @RestController
 @RequestMapping("/api/sessions")
+@CrossOrigin(origins = "*")
 public class SessionController {
 
     @Autowired
