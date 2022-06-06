@@ -1,7 +1,14 @@
 package com.evertix.sessionservice.service.impl;
 
+import com.evertix.sessionservice.client.CourseClient;
+import com.evertix.sessionservice.client.UserClient;
+import com.evertix.sessionservice.dto.EStatus;
+import com.evertix.sessionservice.dto.SessionSaveResource;
 import com.evertix.sessionservice.entities.Session;
+import com.evertix.sessionservice.entities.SessionDetail;
+import com.evertix.sessionservice.model.Course;
 import com.evertix.sessionservice.model.User;
+import com.evertix.sessionservice.repository.SessionDetailRepository;
 import com.evertix.sessionservice.repository.SessionRepository;
 import com.evertix.sessionservice.service.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,36 +20,97 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class SessionServiceImpl implements SessionService {
     @Autowired
     private SessionRepository sessionRepository;
+
     @Autowired
-    private RestTemplate restTemplate;
+    private SessionDetailRepository sessionDetailRepository;
+
+
+    @Autowired
+    private CourseClient courseClient;
+
+    @Autowired
+    private UserClient userClient;
     @Override
     public List<Session> getAllSessions() {
-        return sessionRepository.findAll().stream().map(session -> {
+        /*return sessionRepository.findAll().stream().map(session -> {
             //User student=restTemplate.getForObject("https://user-service/api/users/"+session.getStudentId(),User.class);
             User student=restTemplate.getForObject("https://tutofast-user-service.herokuapp.com/api/users/"+session.getStudentId(),User.class);
 
             session.setStudentModel(student);
             return session;
-        }).collect(Collectors.toList());
+        }).collect(Collectors.toList());*/
+        return null;
     }
 
     @Override
     public Page<Session> getAllSessionsPage(Pageable pageable) {
-        Page<Session> page=sessionRepository.findAll(pageable);
+       /* Page<Session> page=sessionRepository.findAll(pageable);
         List<Session> result=page.getContent().stream().map(session -> {
             User student=restTemplate.getForObject("https://tutofast-user-service.herokuapp.com/api/users/"+session.getStudentId(),User.class);
 
             session.setStudentModel(student);
             return session;
         }).collect(Collectors.toList());
-        return new PageImpl<>(result,pageable, page.getTotalElements());
+        return new PageImpl<>(result,pageable, page.getTotalElements());*/
+        return null;
     }
+
+    @Override
+    public Session createSession(Long courseId, Long studentId, SessionSaveResource sessionResource) {
+
+       Course course = courseClient.getCourseById(courseId);
+       Session session = new Session();
+       session.setCourseId(course.getId());
+
+       User user = userClient.getUserById(studentId);
+       session.setStudentId(user.getId());
+
+       session.setStatus(sessionResource.getStatus().name());
+       session.setEnd_at(sessionResource.getEnd_at());
+       session.setStart_at(sessionResource.getStart_at());
+       session.setTopic(sessionResource.getTopic());
+
+       return this.sessionRepository.save(session);
+    }
+
+    @Override
+    public SessionDetail applySession(Long teacherId, Long sessionId) {
+        Optional<Session> session = this.sessionRepository.findById(sessionId);
+        if (session.isPresent()) {
+            SessionDetail sessionDetail = new SessionDetail();
+            sessionDetail.setSession(session.get());
+            User user = userClient.getUserById(teacherId);
+            sessionDetail.setTeacherId(user.getId());
+            sessionDetail.setState("NO");
+            return this.sessionDetailRepository.save(sessionDetail);
+        }
+        return null;
+    }
+
+    @Override
+    public SessionDetail acceptTeacher(Long teacherId, Long sessionId) {
+        Optional<Session> session = this.sessionRepository.findById(sessionId);
+        if (session.isPresent()) {
+            List<SessionDetail> sessionDetailList = sessionDetailRepository.findAllBySessionId(sessionId);
+            SessionDetail teacherSessionDetail = sessionDetailList.stream().filter(x -> x.getTeacherId().equals(teacherId)).findFirst().orElse(null);
+            if (teacherSessionDetail != null) {
+                teacherSessionDetail.setState("SI");
+                session.get().setStatus(EStatus.CLOSED.name());
+                this.sessionRepository.save(session.get());
+                return this.sessionDetailRepository.save(teacherSessionDetail);
+            }
+        }
+        return null;
+    }
+
+
 
 
 
@@ -63,16 +131,7 @@ public class SessionServiceImpl implements SessionService {
         return sessionRepository.getAllByStatus(status, pageable);
     }
 
-    @Override
-    public Session createSession(Long courseId, Long studentId, Session session) {
-        return courseRepository.findById(courseId).map(course -> {
-            return userRepository.findById(studentId).map(user -> {
-                session.setStudent(user);
-                session.setCourse(course);
-                return sessionRepository.save(session);
-            }).orElseThrow(()-> new ResourceNotFoundException("Student with Id: "+studentId+" not found"));
-        }).orElseThrow(()-> new ResourceNotFoundException("Course with Id: "+courseId+" not found"));
-    }
+
 
     @Override
     public Session updateSession(Long courseId, Long studentId, Long sessionId, Session sessionDetails) {

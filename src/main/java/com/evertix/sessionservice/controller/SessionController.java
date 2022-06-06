@@ -1,6 +1,9 @@
 package com.evertix.sessionservice.controller;
 
+import com.evertix.sessionservice.dto.SessionResource;
+import com.evertix.sessionservice.dto.SessionSaveResource;
 import com.evertix.sessionservice.entities.Session;
+import com.evertix.sessionservice.entities.SessionDetail;
 import com.evertix.sessionservice.service.SessionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -54,8 +57,28 @@ public class SessionController {
         return sessionService.getAllSessionsPage(pageable);
     }
 
+    @PostMapping("/courses/{courseId}/students/{studentId}/sessions")
+    @Operation(summary = "Create Session", description = "Create Session", tags = {"Session"})
+    public Session createSession(@PathVariable(name = "courseId") Long courseId,
+                                         @PathVariable(name = "studentId") Long studentId,
+                                         @Valid @RequestBody SessionSaveResource resource){
+        return sessionService.createSession(courseId, studentId, resource);
+    }
 
 
+    @PostMapping("/{sessionId}/teacher/{teacherId}/apply")
+    @Operation(summary = "Apply Session", description = "Apply Session", tags = {"Session"})
+    public SessionDetail applySession(@PathVariable(name = "teacherId") Long teacherId,
+                                      @PathVariable(name = "sessionId") Long sessionId){
+        return sessionService.applySession(teacherId, sessionId);
+    }
+
+    @PutMapping("/{sessionId}/teacher/{teacherId}/accept")
+    @Operation(summary = "Accept Teacher", description = "Accept Teacher", tags = {"Session"})
+    public SessionDetail acceptTeacher(@PathVariable(name = "teacherId") Long teacherId,
+                                      @PathVariable(name = "sessionId") Long sessionId){
+        return sessionService.acceptTeacher(teacherId, sessionId);
+    }
 
 
     /*

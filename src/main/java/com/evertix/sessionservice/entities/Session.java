@@ -22,7 +22,7 @@ import java.util.Date;
 @JsonIgnoreProperties(value = {"studentId","courseId"},allowSetters = true)
 public class Session extends AuditModel{
 
-    public Session(Date start_at, Date end_at, String status, String topic, String link, Long studentId, Long courseId) {
+    public Session(LocalDateTime start_at, LocalDateTime end_at, String status, String topic, String link, Long studentId, Long courseId) {
         this.start_at=start_at;
         this.end_at=end_at;
         this.status=status;
@@ -37,10 +37,10 @@ public class Session extends AuditModel{
     private Long id;
 
     @Column(nullable = false, updatable = false)
-    private Date start_at;
+    private LocalDateTime start_at;
 
     @Column(nullable = false, updatable = false)
-    private Date end_at;
+    private LocalDateTime end_at;
 
     @NotNull(message = "Status cannot be null")
     @NotBlank(message = "Status cannot be blank")
