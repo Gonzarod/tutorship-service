@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.evertix</groupId>
-    <artifactId>session-service</artifactId>
+    <artifactId>tutorship-service</artifactId>
     <version>1.0</version>
-    <name>session-service</name>
-    <description>Session service for Tutofast Application</description>
+    <name>tutorship-service</name>
+    <description>Tutorship service for Tutofast Application</description>
 
     <properties>
         <java.version>1.8</java.version>
